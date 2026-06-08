@@ -17,6 +17,8 @@
 	var drawer = null;
 	var initialized = false;
 
+	var menuConfig;
+
 	function qs(selector, context) {
 		return (context || document).querySelector(selector);
 	}
@@ -26,10 +28,125 @@
 	}
 
 	/**
+	 * Configuration d'ordre/masquage du menu fournie par le serveur (réglages
+	 * admin de l'app), propre à l'utilisateur courant. Mise en cache car
+	 * `populateDrawer` peut être appelée plusieurs fois (à chaque ouverture).
+	 */
+	function getMenuConfig() {
+		if (menuConfig !== undefined) {
+			return menuConfig;
+		}
+
+		menuConfig = null;
+		if (typeof window.OCP !== 'undefined' && window.OCP.InitialState && typeof window.OCP.InitialState.loadState === 'function') {
+			try {
+				menuConfig = window.OCP.InitialState.loadState('mobilemenu', 'menuConfig', null);
+			} catch (e) {
+				menuConfig = null;
+			}
+		}
+
+		return menuConfig;
+	}
+
+	/**
+	 * Identifie l'app à laquelle correspond une entrée de menu (élément de
+	 * liste ou lien), en essayant plusieurs attributs/heuristiques pour
+	 * rester robuste face aux variations entre versions/thèmes de Nextcloud.
+	 */
+	function getEntryAppId(item) {
+		// L'identifiant peut se trouver sur l'élément lui-même (lien/bouton)
+		// ou sur son <li> englobant, selon la structure du menu d'origine.
+		var candidates = [item];
+		var listItem = item.closest && item.closest('li');
+		if (listItem && listItem !== item) {
+			candidates.push(listItem);
+		}
+
+		for (var i = 0; i < candidates.length; i++) {
+			var el = candidates[i];
+			if (el.dataset && el.dataset.id) {
+				return el.dataset.id;
+			}
+			if (el.dataset && el.dataset.appId) {
+				return el.dataset.appId;
+			}
+		}
+
+		var link = item.matches && item.matches('a, button') ? item : qs('a, button', item);
+		if (!link) {
+			return null;
+		}
+
+		var href = link.getAttribute && link.getAttribute('href');
+		if (href) {
+			var match = href.match(/\/apps\/([^/?#]+)/);
+			if (match) {
+				return match[1];
+			}
+		}
+
+		if (link.id) {
+			return link.id.replace(/^appmenu[-_]?/, '');
+		}
+
+		return null;
+	}
+
+	/**
+	 * Filtre les entrées masquées et applique l'ordre personnalisé défini
+	 * dans les réglages admin (les entrées non listées gardent leur ordre
+	 * d'origine et sont placées après celles qui sont explicitement ordonnées).
+	 */
+	function applyMenuConfig(items) {
+		var config = getMenuConfig();
+		if (!config) {
+			return items;
+		}
+
+		var hidden = config.hidden || [];
+		var order = config.order || [];
+
+		var visible = items.filter(function (item) {
+			var appId = getEntryAppId(item);
+			return !appId || hidden.indexOf(appId) === -1;
+		});
+
+		if (!order.length) {
+			return visible;
+		}
+
+		var orderIndex = {};
+		order.forEach(function (appId, index) {
+			orderIndex[appId] = index;
+		});
+
+		return visible
+			.map(function (item, naturalIndex) {
+				var appId = getEntryAppId(item);
+				var hasOrder = appId !== null && Object.prototype.hasOwnProperty.call(orderIndex, appId);
+				return {
+					item: item,
+					sortKey: hasOrder ? orderIndex[appId] : (order.length + naturalIndex),
+					naturalIndex: naturalIndex
+				};
+			})
+			.sort(function (a, b) {
+				if (a.sortKey !== b.sortKey) {
+					return a.sortKey - b.sortKey;
+				}
+				return a.naturalIndex - b.naturalIndex;
+			})
+			.map(function (wrapped) {
+				return wrapped.item;
+			});
+	}
+
+	/**
 	 * Construit une section du tiroir à partir des liens d'un menu existant,
 	 * en clonant les éléments (sans jamais toucher au DOM original).
 	 */
-	function buildSection(title, sourceSelector, itemSelector) {
+	function buildSection(title, sourceSelector, itemSelector, options) {
 		var source = qs(sourceSelector);
 		if (!source) {
 			return null;
@@ -38,6 +155,13 @@
 		var items = qsa(itemSelector, source);
 		if (!items.length) {
 			return null;
+		}
+
+		if (options && options.applyMenuConfig) {
+			items = applyMenuConfig(items);
+			if (!items.length) {
+				return null;
+			}
 		}
 
 		var section = document.createElement('section');
@@ -72,7 +196,7 @@
 		drawer.innerHTML = '';
 
 		var sections = [
-			buildSection(t('Applications'), '#appmenu', 'li > a'),
+			buildSection(t('Applications'), '#appmenu', 'li > a', { applyMenuConfig: true }),
 			buildSection(t('Compte'), '#user-menu, #settings #expand', 'a, button')
 		];
 
