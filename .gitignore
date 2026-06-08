@@ -1,0 +1,13 @@
+# Dépendances et builds
+/vendor/
+/node_modules/
+/mobilemenu/vendor/
+/mobilemenu/node_modules/
+/mobilemenu/build/
+/mobilemenu/js/*.map
+
+# Fichiers d'environnement / IDE
+.vscode/
+*.log
+.DS_Store
+Thumbs.db

@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<info xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:noNamespaceSchemaLocation="https://apps.nextcloud.com/schema/apps/info.xsd">
+    <id>mobilemenu</id>
+    <name>Mobile Menu</name>
+    <summary>Barre de navigation tactile pour mobile et tablette</summary>
+    <description><![CDATA[Ajoute un menu hamburger et un tiroir de navigation coulissant à la barre du haut de Nextcloud, et agrandit les cibles tactiles (icônes, liens) sur mobile et tablette, sans modifier l'interface desktop.]]></description>
+    <version>1.0.0</version>
+    <licence>agpl</licence>
+    <author>Wdebo</author>
+    <namespace>MobileMenu</namespace>
+    <category>tools</category>
+    <website>https://github.com/</website>
+    <bugs>https://github.com/</bugs>
+    <dependencies>
+        <nextcloud min-version="30" max-version="33"/>
+    </dependencies>
+</info>

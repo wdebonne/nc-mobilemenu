@@ -1,0 +1,27 @@
+<?php
+
+declare(strict_types=1);
+
+namespace OCA\MobileMenu\AppInfo;
+
+use OCA\MobileMenu\Listener\BeforeTemplateRenderedListener;
+use OCP\AppFramework\App;
+use OCP\AppFramework\Bootstrap\IBootContext;
+use OCP\AppFramework\Bootstrap\IBootstrap;
+use OCP\AppFramework\Bootstrap\IRegistrationContext;
+use OCP\AppFramework\Http\Events\BeforeTemplateRenderedEvent;
+
+class Application extends App implements IBootstrap {
+	public const APP_ID = 'mobilemenu';
+
+	public function __construct() {
+		parent::__construct(self::APP_ID);
+	}
+
+	public function register(IRegistrationContext $context): void {
+		$context->registerEventListener(BeforeTemplateRenderedEvent::class, BeforeTemplateRenderedListener::class);
+	}
+
+	public function boot(IBootContext $context): void {
+	}
+}

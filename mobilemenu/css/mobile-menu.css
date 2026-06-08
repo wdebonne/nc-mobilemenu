@@ -1,0 +1,166 @@
+/*
+ * Styles actifs uniquement sous le breakpoint tablette/mobile.
+ * Au-dessus, l'interface desktop native de Nextcloud n'est pas modifiée.
+ */
+@media (max-width: 1024px) {
+
+	/* --- Cibles tactiles agrandies sur la barre du haut --- */
+	#header .menutoggle,
+	#header .header-menu .menutoggle,
+	#header-right .header-menu > .menutoggle,
+	#appmenu li a,
+	#user-menu a,
+	#user-menu button,
+	.header-menu .menu a,
+	.header-menu .menu button {
+		min-height: 44px;
+		min-width: 44px;
+		padding: 12px;
+		display: inline-flex;
+		align-items: center;
+		gap: 8px;
+		box-sizing: border-box;
+	}
+
+	#appmenu li {
+		margin: 0 2px;
+	}
+
+	#appmenu li a {
+		flex-direction: column;
+		justify-content: center;
+	}
+
+	/* --- Bouton hamburger injecté par mobile-menu.js --- */
+	.mobilemenu-toggle {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		min-width: 44px;
+		min-height: 44px;
+		padding: 10px;
+		margin-right: 4px;
+		background: transparent;
+		border: none;
+		cursor: pointer;
+		order: -1;
+	}
+
+	.mobilemenu-toggle .mobilemenu-bar {
+		display: block;
+		width: 22px;
+		height: 2px;
+		margin: 3px 0;
+		background-color: var(--color-header-text, currentColor);
+		border-radius: 1px;
+		transition: transform 0.2s ease, opacity 0.2s ease;
+	}
+
+	.mobilemenu-toggle[aria-expanded="true"] .mobilemenu-bar:nth-child(1) {
+		transform: translateY(5px) rotate(45deg);
+	}
+
+	.mobilemenu-toggle[aria-expanded="true"] .mobilemenu-bar:nth-child(2) {
+		opacity: 0;
+	}
+
+	.mobilemenu-toggle[aria-expanded="true"] .mobilemenu-bar:nth-child(3) {
+		transform: translateY(-5px) rotate(-45deg);
+	}
+
+	/* --- Voile semi-transparent derrière le tiroir --- */
+	.mobilemenu-overlay {
+		position: fixed;
+		inset: 0;
+		background: rgba(0, 0, 0, 0.4);
+		z-index: 7500;
+		opacity: 0;
+		visibility: hidden;
+		transition: opacity 0.2s ease, visibility 0s linear 0.2s;
+	}
+
+	body.mobilemenu-open .mobilemenu-overlay {
+		opacity: 1;
+		visibility: visible;
+		transition: opacity 0.2s ease;
+	}
+
+	/* --- Tiroir de navigation coulissant --- */
+	.mobilemenu-drawer {
+		position: fixed;
+		top: 0;
+		bottom: 0;
+		left: 0;
+		width: min(85vw, 320px);
+		max-width: 320px;
+		background: var(--color-main-background, #fff);
+		color: var(--color-main-text, #222);
+		z-index: 7501;
+		overflow-y: auto;
+		box-shadow: 2px 0 12px rgba(0, 0, 0, 0.25);
+		transform: translateX(-100%);
+		transition: transform 0.25s ease;
+		padding: 12px 8px calc(12px + env(safe-area-inset-bottom));
+	}
+
+	body.mobilemenu-open .mobilemenu-drawer {
+		transform: translateX(0);
+	}
+
+	.mobilemenu-drawer h2 {
+		font-size: 15px;
+		text-transform: uppercase;
+		letter-spacing: 0.04em;
+		opacity: 0.6;
+		margin: 16px 12px 8px;
+	}
+
+	.mobilemenu-drawer h2:first-child {
+		margin-top: 8px;
+	}
+
+	/* Les menus déplacés dans le tiroir redeviennent une liste verticale plein-largeur */
+	.mobilemenu-drawer #appmenu,
+	.mobilemenu-drawer .mobilemenu-section > ul {
+		display: flex;
+		flex-direction: column;
+		width: 100%;
+	}
+
+	.mobilemenu-drawer #appmenu li,
+	.mobilemenu-drawer .mobilemenu-section li {
+		width: 100%;
+		margin: 0;
+	}
+
+	.mobilemenu-drawer #appmenu li a,
+	.mobilemenu-drawer .mobilemenu-section li a,
+	.mobilemenu-drawer .mobilemenu-section li button {
+		flex-direction: row;
+		justify-content: flex-start;
+		width: 100%;
+		min-height: 48px;
+		padding: 12px 16px;
+		border-radius: var(--border-radius-large, 8px);
+	}
+
+	.mobilemenu-drawer #appmenu li a:hover,
+	.mobilemenu-drawer .mobilemenu-section li a:hover,
+	.mobilemenu-drawer .mobilemenu-section li button:hover {
+		background: var(--color-background-hover, rgba(0, 0, 0, 0.05));
+	}
+
+	/* Empêche le défilement de la page derrière le tiroir ouvert */
+	body.mobilemenu-open {
+		overflow: hidden;
+	}
+}
+
+/* Le bouton hamburger ne doit jamais apparaître au-dessus du breakpoint */
+@media (min-width: 1025px) {
+	.mobilemenu-toggle,
+	.mobilemenu-overlay,
+	.mobilemenu-drawer {
+		display: none !important;
+	}
+}
