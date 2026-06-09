@@ -1,0 +1,105 @@
+/* Mobile Menu — styles de la page d'administration */
+
+#mobilemenu-admin-settings {
+	max-width: 720px;
+}
+
+.mobilemenu-admin-desc {
+	color: var(--color-text-lighter, #666);
+	margin-bottom: 16px;
+}
+
+.mobilemenu-admin-group {
+	border: 1px solid var(--color-border, #ddd);
+	border-radius: var(--border-radius, 4px);
+	margin-bottom: 8px;
+	overflow: hidden;
+}
+
+.mobilemenu-admin-group > summary {
+	padding: 10px 14px;
+	cursor: pointer;
+	font-weight: bold;
+	user-select: none;
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	list-style: none; /* masque le triangle natif sur Firefox */
+}
+
+.mobilemenu-admin-group > summary::-webkit-details-marker {
+	display: none;
+}
+
+.mobilemenu-admin-group > summary::before {
+	content: '▶';
+	font-size: 10px;
+	transition: transform 0.15s;
+	flex-shrink: 0;
+}
+
+.mobilemenu-admin-group[open] > summary::before {
+	transform: rotate(90deg);
+}
+
+.mobilemenu-admin-badge {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	background: var(--color-primary, #0082c9);
+	color: #fff;
+	border-radius: 10px;
+	font-size: 11px;
+	font-weight: normal;
+	min-width: 18px;
+	padding: 0 5px;
+	height: 18px;
+}
+
+.mobilemenu-admin-applist {
+	list-style: none;
+	margin: 0;
+	padding: 10px 14px 14px;
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+	gap: 6px 12px;
+	border-top: 1px solid var(--color-border, #ddd);
+	background: var(--color-background-hover, #f5f5f5);
+}
+
+.mobilemenu-admin-applist li label {
+	display: flex;
+	align-items: center;
+	gap: 6px;
+	cursor: pointer;
+}
+
+.mobilemenu-admin-applist input[type='checkbox'] {
+	cursor: pointer;
+	flex-shrink: 0;
+}
+
+.mobilemenu-admin-noapps {
+	padding: 10px 14px;
+	color: var(--color-text-lighter, #666);
+	font-style: italic;
+}
+
+.mobilemenu-admin-footer {
+	display: flex;
+	align-items: center;
+	gap: 12px;
+	margin-top: 16px;
+}
+
+.mobilemenu-admin-status {
+	font-size: 13px;
+}
+
+.mobilemenu-admin-status.success {
+	color: var(--color-success, #46ba61);
+}
+
+.mobilemenu-admin-status.error {
+	color: var(--color-error, #e9322d);
+}

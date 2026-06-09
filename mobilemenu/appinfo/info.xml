@@ -5,7 +5,7 @@
     <name>Mobile Menu</name>
     <summary>Barre de navigation tactile pour mobile et tablette</summary>
     <description><![CDATA[Ajoute un menu hamburger et un tiroir de navigation coulissant à la barre du haut de Nextcloud, et agrandit les cibles tactiles (icônes, liens) sur mobile et tablette, sans modifier l'interface desktop.]]></description>
-    <version>1.0.10</version>
+    <version>1.1.0</version>
     <licence>agpl</licence>
     <author>Wdebo</author>
     <namespace>MobileMenu</namespace>
@@ -15,4 +15,7 @@
     <dependencies>
         <nextcloud min-version="30" max-version="33"/>
     </dependencies>
+    <settings>
+        <admin>OCA\MobileMenu\Settings\AdminSettings</admin>
+    </settings>
 </info>

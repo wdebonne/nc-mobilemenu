@@ -21,6 +21,29 @@
 	var drawer = null;
 	var initialized = false;
 
+	// Apps masquées selon la configuration admin (par groupe utilisateur)
+	var hiddenApps = (function () {
+		try {
+			var el = document.getElementById('initial-state-mobilemenu-hidden_apps');
+			return el ? JSON.parse(atob(el.value)) : [];
+		} catch (e) {
+			return [];
+		}
+	}());
+
+	function getAppIdFromLink(link) {
+		var href = (link && (link.getAttribute('href') || link.href)) || '';
+		var match = href.match(/\/apps\/([^\/\?#]+)/);
+		return match ? match[1] : null;
+	}
+
+	function isAppHidden(item) {
+		if (!hiddenApps.length) return false;
+		var link = item.tagName === 'A' ? item : item.querySelector('a');
+		var appId = link ? getAppIdFromLink(link) : null;
+		return appId ? hiddenApps.indexOf(appId) !== -1 : false;
+	}
+
 	function qs(selector, context) {
 		return (context || document).querySelector(selector);
 	}
@@ -71,6 +94,8 @@
 
 		var list = document.createElement('ul');
 		items.forEach(function (item) {
+			if (isAppHidden(item)) return;
+
 			var clone = item.cloneNode(true);
 			clone.removeAttribute('id');
 			qsa('[id]', clone).forEach(function (el) {
