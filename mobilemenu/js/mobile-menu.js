@@ -2,9 +2,13 @@
  * Mobile Menu — ajoute un bouton hamburger et un tiroir de navigation
  * coulissant à la barre du haut de Nextcloud sur mobile et tablette.
  *
- * Le script ne modifie jamais le DOM natif de Nextcloud : il clone les liens
- * existants du menu d'apps et du menu utilisateur dans son propre tiroir,
- * pour rester robuste face aux mises à jour / re-rendus Vue du header.
+ * Le script ne modifie jamais le contenu du DOM natif de Nextcloud : il clone
+ * les liens existants du menu d'apps et du menu utilisateur dans son propre
+ * tiroir, pour rester robuste face aux mises à jour / re-rendus Vue du header.
+ * Seule exception : le popover « plus d'applications » étant un composant Vue
+ * dont le contenu n'est monté que pendant son ouverture, le script l'ouvre et
+ * le referme une fois, brièvement et masqué via CSS, pour en cloner les liens
+ * (résultat mis en cache pour ne le faire qu'une seule fois par session).
  */
 (function () {
 	'use strict';
@@ -26,26 +30,44 @@
 	}
 
 	/**
-	 * Construit une section du tiroir à partir des liens d'un menu existant,
-	 * en clonant les éléments (sans jamais toucher au DOM original).
+	 * Construit une section du tiroir à partir d'éléments déjà obtenus
+	 * (clonés depuis un menu existant, sans jamais toucher au DOM original).
 	 */
-	function buildSection(title, sourceSelector, itemSelector) {
-		var source = qs(sourceSelector);
-		if (!source) {
-			return null;
+	/**
+	 * Les icônes d'applications sont des silhouettes monochromes appliquées en
+	 * `background-image`, prévues pour le fond de la barre du haut (couleur
+	 * fixe, souvent blanche). Une fois clonées sur le fond clair du tiroir,
+	 * elles peuvent devenir illisibles (blanc sur blanc). On les convertit en
+	 * masques CSS teintés avec `--color-main-text`, la couleur de texte du
+	 * thème courant : elles restent ainsi lisibles aussi bien en thème clair
+	 * (silhouette sombre) qu'en thème sombre (silhouette claire), sans avoir à
+	 * détecter le thème nous-mêmes.
+	 */
+	function recolorIcon(icon) {
+		var image = icon.style.backgroundImage;
+		if (!image || image === 'none') {
+			return;
 		}
 
-		var items = qsa(itemSelector, source);
-		if (!items.length) {
+		icon.style.backgroundImage = 'none';
+		icon.style.webkitMaskImage = image;
+		icon.style.maskImage = image;
+		icon.style.webkitMaskRepeat = 'no-repeat';
+		icon.style.maskRepeat = 'no-repeat';
+		icon.style.webkitMaskPosition = 'center';
+		icon.style.maskPosition = 'center';
+		icon.style.webkitMaskSize = 'contain';
+		icon.style.maskSize = 'contain';
+		icon.style.backgroundColor = 'var(--color-main-text)';
+	}
+
+	function buildSectionFromItems(items) {
+		if (!items || !items.length) {
 			return null;
 		}
 
 		var section = document.createElement('section');
 		section.className = 'mobilemenu-section';
-
-		var heading = document.createElement('h2');
-		heading.textContent = title;
-		section.appendChild(heading);
 
 		var list = document.createElement('ul');
 		items.forEach(function (item) {
@@ -54,6 +76,7 @@
 			qsa('[id]', clone).forEach(function (el) {
 				el.removeAttribute('id');
 			});
+			qsa('.action-link__icon--url', clone).forEach(recolorIcon);
 
 			var li = document.createElement('li');
 			li.appendChild(clone);
@@ -64,32 +87,180 @@
 		return section;
 	}
 
-	function populateDrawer() {
-		if (!drawer) {
+	/**
+	 * Construit une section du tiroir à partir des liens d'un menu existant
+	 * et toujours présent dans le DOM (sans jamais toucher au DOM original).
+	 */
+	function buildSection(sourceSelector, itemSelector) {
+		var source = qs(sourceSelector);
+		if (!source) {
+			return null;
+		}
+
+		return buildSectionFromItems(qsa(itemSelector, source));
+	}
+
+	/**
+	 * Le menu « plus d'applications » (#appmenu .app-menu__overflow) est un
+	 * popover Vue dont le contenu (.app-menu__overflow-entry) n'existe dans le
+	 * DOM que pendant qu'il est ouvert. On l'ouvre donc une fois, brièvement et
+	 * masqué via CSS (.mobilemenu-harvesting), pour cloner ses liens, puis on le
+	 * referme — le résultat est mis en cache pour ne le faire qu'une seule fois.
+	 */
+	var overflowLinksCache = null;
+	var overflowHarvestDone = false;
+
+	/**
+	 * Referme le popover « plus d'applications » après la récolte. Un simple
+	 * second clic sur le déclencheur peut entrer en compétition avec la
+	 * détection « clic extérieur » du popover (la rouvrant aussitôt) : on
+	 * essaie donc plusieurs mécanismes de fermeture dans l'ordre, en vérifiant
+	 * `aria-expanded` après chacun, jusqu'à ce qu'il repasse à `false`.
+	 */
+	function closeOverflowPopover(trigger, done) {
+		if (trigger.getAttribute('aria-expanded') !== 'true') {
+			done();
 			return;
 		}
 
-		drawer.innerHTML = '';
-
-		var sections = [
-			buildSection(t('Applications'), '#appmenu', 'li > a'),
-			buildSection(t('Compte'), '#user-menu, #settings #expand', 'a, button')
+		var strategies = [
+			function () {
+				document.dispatchEvent(new KeyboardEvent('keydown', {
+					key: 'Escape',
+					code: 'Escape',
+					keyCode: 27,
+					which: 27,
+					bubbles: true
+				}));
+			},
+			function () {
+				var backdrop = qs('.action-item__popper .v-popper__backdrop');
+				if (backdrop) {
+					backdrop.click();
+				}
+			},
+			function () {
+				trigger.click();
+			}
 		];
 
-		var hasContent = false;
-		sections.forEach(function (section) {
-			if (section) {
-				drawer.appendChild(section);
-				hasContent = true;
+		var index = 0;
+
+		function tryNext() {
+			if (trigger.getAttribute('aria-expanded') !== 'true') {
+				done();
+				return;
+			}
+			if (index >= strategies.length) {
+				done();
+				return;
+			}
+			strategies[index]();
+			index += 1;
+			setTimeout(tryNext, 80);
+		}
+
+		tryNext();
+	}
+
+	function harvestOverflowLinks(callback) {
+		if (overflowHarvestDone) {
+			callback(overflowLinksCache || []);
+			return;
+		}
+
+		var trigger = qs('.app-menu__overflow .action-item__menutoggle');
+		if (!trigger) {
+			overflowHarvestDone = true;
+			callback([]);
+			return;
+		}
+
+		var wasOpen = trigger.getAttribute('aria-expanded') === 'true';
+		var settled = false;
+		var safetyTimer = null;
+
+		var observer = new MutationObserver(function () {
+			var links = qsa('.app-menu__overflow-entry > a');
+			if (links.length) {
+				finish(links);
 			}
 		});
 
-		if (!hasContent) {
-			var empty = document.createElement('p');
-			empty.className = 'mobilemenu-empty';
-			empty.textContent = t('Aucun élément de menu disponible');
-			drawer.appendChild(empty);
+		function finish(liveLinks) {
+			if (settled) {
+				return;
+			}
+			settled = true;
+
+			observer.disconnect();
+			clearTimeout(safetyTimer);
+
+			var clones = liveLinks.map(function (link) {
+				return link.cloneNode(true);
+			});
+
+			overflowHarvestDone = true;
+			overflowLinksCache = clones.length ? clones : null;
+
+			function reveal() {
+				document.body.classList.remove('mobilemenu-harvesting');
+				callback(clones);
+			}
+
+			if (wasOpen) {
+				reveal();
+			} else {
+				closeOverflowPopover(trigger, reveal);
+			}
 		}
+
+		document.body.classList.add('mobilemenu-harvesting');
+		observer.observe(document.body, { childList: true, subtree: true });
+		safetyTimer = setTimeout(function () {
+			finish([]);
+		}, 800);
+
+		if (wasOpen) {
+			var existingLinks = qsa('.app-menu__overflow-entry > a');
+			if (existingLinks.length) {
+				finish(existingLinks);
+			}
+			// Sinon : le popover est ouvert mais son contenu n'est pas encore
+			// monté — on laisse l'observer (ou le filet de sécurité) le détecter.
+		} else {
+			trigger.click();
+		}
+	}
+
+	function populateDrawer(done) {
+		if (!drawer) {
+			if (done) {
+				done();
+			}
+			return;
+		}
+
+		harvestOverflowLinks(function (overflowLinks) {
+			drawer.innerHTML = '';
+
+			var appsSection = overflowLinks.length
+				? buildSectionFromItems(overflowLinks)
+				: buildSection('#appmenu', 'li > a');
+
+			if (appsSection) {
+				drawer.appendChild(appsSection);
+			} else {
+				var empty = document.createElement('p');
+				empty.className = 'mobilemenu-empty';
+				empty.textContent = t('Aucun élément de menu disponible');
+				drawer.appendChild(empty);
+			}
+
+			if (done) {
+				done();
+			}
+		});
 	}
 
 	/**
@@ -108,18 +279,19 @@
 	}
 
 	function openDrawer() {
-		populateDrawer();
-		document.body.classList.add('mobilemenu-open');
-		toggleButton.setAttribute('aria-expanded', 'true');
-		drawer.setAttribute('aria-hidden', 'false');
+		populateDrawer(function () {
+			document.body.classList.add('mobilemenu-open');
+			toggleButton.setAttribute('aria-expanded', 'true');
+			drawer.setAttribute('aria-hidden', 'false');
 
-		document.addEventListener('keydown', onKeydown);
-		overlay.addEventListener('click', closeDrawer);
+			document.addEventListener('keydown', onKeydown);
+			overlay.addEventListener('click', closeDrawer);
 
-		var firstLink = qs('a, button', drawer);
-		if (firstLink) {
-			firstLink.focus();
-		}
+			var firstLink = qs('a, button', drawer);
+			if (firstLink) {
+				firstLink.focus();
+			}
+		});
 	}
 
 	function closeDrawer() {

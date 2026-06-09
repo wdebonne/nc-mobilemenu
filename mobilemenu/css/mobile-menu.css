@@ -34,6 +34,7 @@
 	/* --- Bouton hamburger injecté par mobile-menu.js --- */
 	.mobilemenu-toggle {
 		display: inline-flex;
+		flex-direction: column;
 		align-items: center;
 		justify-content: center;
 		min-width: 44px;
@@ -91,8 +92,8 @@
 		top: 0;
 		bottom: 0;
 		left: 0;
-		width: min(85vw, 320px);
-		max-width: 320px;
+		width: min(62vw, 250px);
+		max-width: 250px;
 		background: var(--color-main-background, #fff);
 		color: var(--color-main-text, #222);
 		z-index: 7501;
@@ -105,18 +106,6 @@
 
 	body.mobilemenu-open .mobilemenu-drawer {
 		transform: translateX(0);
-	}
-
-	.mobilemenu-drawer h2 {
-		font-size: 15px;
-		text-transform: uppercase;
-		letter-spacing: 0.04em;
-		opacity: 0.6;
-		margin: 16px 12px 8px;
-	}
-
-	.mobilemenu-drawer h2:first-child {
-		margin-top: 8px;
 	}
 
 	/* Les menus déplacés dans le tiroir redeviennent une liste verticale plein-largeur */
@@ -138,10 +127,12 @@
 	.mobilemenu-drawer .mobilemenu-section li button {
 		flex-direction: row;
 		justify-content: flex-start;
+		align-items: center;
 		width: 100%;
 		min-height: 48px;
 		padding: 12px 16px;
 		border-radius: var(--border-radius-large, 8px);
+		gap: 12px;
 	}
 
 	.mobilemenu-drawer #appmenu li a:hover,
@@ -150,9 +141,30 @@
 		background: var(--color-background-hover, rgba(0, 0, 0, 0.05));
 	}
 
+	/*
+	 * La couleur des icônes d'applications est recolorée en JS (mobile-menu.js,
+	 * recolorIcon) via un masque CSS teinté avec --color-main-text, pour rester
+	 * lisible aussi bien en thème clair qu'en thème sombre. On ne fait ici que
+	 * reproduire la légère atténuation utilisée par Nextcloud pour ces icônes.
+	 */
+	.mobilemenu-drawer .mobilemenu-section .action-link__icon--url {
+		opacity: 0.7;
+	}
+
 	/* Empêche le défilement de la page derrière le tiroir ouvert */
 	body.mobilemenu-open {
 		overflow: hidden;
+	}
+
+	/*
+	 * Pendant la récolte silencieuse des liens du menu natif « plus
+	 * d'applications » (popover Vue ouvert/fermé par mobile-menu.js pour en
+	 * cloner le contenu), on le masque pour qu'il ne clignote jamais à l'écran.
+	 */
+	body.mobilemenu-harvesting .action-item__popper {
+		visibility: hidden !important;
+		opacity: 0 !important;
+		pointer-events: none !important;
 	}
 }
 

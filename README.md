@@ -7,7 +7,7 @@ App Nextcloud qui rend la barre de navigation du haut **utilisable au tactile** 
 Sur mobile/tablette, la barre du haut de Nextcloud peut être difficile à utiliser au doigt : icônes/liens trop petits ou trop rapprochés, pas de menu repliable adapté au tactile. `mobilemenu` ajoute une couche légère, purement front-end, qui :
 
 - affiche un **bouton hamburger** sous un certain breakpoint (≤ 1024px) ;
-- ouvre un **tiroir de navigation** (drawer) regroupant le menu d'applications et le menu utilisateur, avec gestion clavier (Échap), clic extérieur pour fermer, et attributs ARIA pour l'accessibilité ;
+- ouvre un **tiroir de navigation** (drawer) listant les applications, avec gestion clavier (Échap), clic extérieur pour fermer, et attributs ARIA pour l'accessibilité ;
 - **agrandit les cibles tactiles** (icônes, liens, boutons) à au moins 44×44px ;
 - ne modifie **rien** au-dessus de 1024px : l'expérience desktop native de Nextcloud reste intacte.
 
@@ -16,7 +16,7 @@ Sur mobile/tablette, la barre du haut de Nextcloud peut être difficile à utili
 L'app `mobilemenu` ne modifie aucun fichier du cœur de Nextcloud. Elle s'enregistre sur l'évènement `BeforeTemplateRenderedEvent` (mécanisme officiel pour charger du CSS/JS sur chaque page rendue) et injecte :
 
 - [`css/mobile-menu.css`](mobilemenu/css/mobile-menu.css) — media queries qui agrandissent les cibles tactiles et stylent le tiroir/bouton hamburger ;
-- [`js/mobile-menu.js`](mobilemenu/js/mobile-menu.js) — script vanilla JS qui construit le bouton hamburger et le tiroir en **clonant** les liens existants du menu d'apps (`#appmenu`) et du menu utilisateur (sans jamais déplacer ou modifier le DOM original, pour rester compatible avec les composants Vue de Nextcloud).
+- [`js/mobile-menu.js`](mobilemenu/js/mobile-menu.js) — script vanilla JS qui construit le bouton hamburger et le tiroir en **clonant** les liens d'applications existants (visibles dans `#appmenu` ou repliés dans le menu natif « plus d'applications »), sans jamais déplacer ou modifier durablement le DOM original, pour rester compatible avec les composants Vue de Nextcloud.
 
 ## Structure du projet
 
