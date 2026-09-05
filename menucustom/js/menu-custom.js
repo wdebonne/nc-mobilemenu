@@ -584,10 +584,39 @@
 			qsa('[id]', clone).forEach(function (el) {
 				el.removeAttribute('id');
 			});
+			qsa('.action-link__icon--url, .app-icon', clone).forEach(recolorClonedIcon);
 			return clone;
 		});
 
 		return buildSection(title, clones);
+	}
+
+	/**
+	 * Les icônes du header sont blanches : prévues pour le fond fixe de la
+	 * barre du haut, elles sont quasi invisibles sur celui du tiroir, et le
+	 * problème s'inverse en thème sombre. Les convertir en masque teinté avec
+	 * `--color-main-text` les rend lisibles dans les deux thèmes sans avoir à
+	 * détecter lequel est actif.
+	 *
+	 * Ne concerne que les entrées clonées : celles construites à partir des
+	 * données du serveur portent leur propre icône.
+	 */
+	function recolorClonedIcon(icon) {
+		var image = icon.style.backgroundImage;
+		if (!image || image === 'none') {
+			return;
+		}
+
+		icon.style.backgroundImage = 'none';
+		icon.style.webkitMaskImage = image;
+		icon.style.maskImage = image;
+		icon.style.webkitMaskRepeat = 'no-repeat';
+		icon.style.maskRepeat = 'no-repeat';
+		icon.style.webkitMaskPosition = 'center';
+		icon.style.maskPosition = 'center';
+		icon.style.webkitMaskSize = 'contain';
+		icon.style.maskSize = 'contain';
+		icon.style.backgroundColor = 'var(--color-main-text)';
 	}
 
 	function populateDrawer() {
