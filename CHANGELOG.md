@@ -3,6 +3,26 @@
 Toutes les modifications notables de `menucustom` sont documentées ici.
 Le format suit [Keep a Changelog](https://keepachangelog.com/fr/1.0.0/) et le projet adhère au [versionnage sémantique](https://semver.org/lang/fr/).
 
+## [2.2.0] - 2026-09-05
+
+### Ajouté
+
+- **La section « Compte » du tiroir devient optionnelle**, et est désormais **désactivée par défaut**. Un nouveau bloc « Tiroir mobile » dans les réglages admin permet de la réafficher. Ces entrées (réglages, statut, déconnexion) restent accessibles par l'avatar : les reprendre dans le tiroir l'allongeait sans rien apporter, et repoussait les applications hors de l'écran sur un téléphone. Reprend la décision de la 1.0.2, mais en la laissant au choix de l'admin.
+- **Barre de titre du tiroir avec une croix de fermeture.** Le voile et la touche Échap fermaient déjà le tiroir, mais ni l'un ni l'autre ne se devine : sur un écran tactile il faut une cible visible. La barre reste collée en haut pendant le défilement.
+
+### Modifié
+
+- **Ergonomie tactile du tiroir**, pour une utilisation par des personnes non techniciennes sur téléphone et tablette :
+  - lignes portées de 48 à 56px de haut, bien au-delà du minimum de 44px, avec un espacement plus généreux entre l'icône et le libellé ;
+  - libellés à 16px (au lieu de la taille héritée du thème, plus petite) et icônes à 24px (au lieu de 20) ;
+  - retour visuel à l'appui (`:active`) : au doigt il n'y a pas de survol, l'appui doit se voir immédiatement ;
+  - la page courante est signalée par un liseré dans la couleur d'accent du thème, en plus du fond — un fond seul se repère mal dans une liste longue ;
+  - tiroir élargi à `min(88vw, 340px)`, voile assombri, et retrait de sécurité (`safe-area-inset`) pris en compte à gauche et en haut pour les écrans à encoche ;
+  - titres de section plus discrets, pour ne pas concurrencer visuellement les entrées ;
+  - le défilement du tiroir ne se propage plus à la page derrière (`overscroll-behavior: contain`) ;
+  - la pastille de repli (initiale du nom, pour une entrée sans icône) est posée sur un rond plutôt que flottante.
+- Les animations d'ouverture sont désactivées pour les personnes ayant demandé une réduction des mouvements dans leur système (`prefers-reduced-motion`).
+
 ## [2.1.0] - 2026-09-05
 
 ### Ajouté

@@ -24,8 +24,9 @@ class SettingsController extends Controller {
 
 	/**
 	 * Enregistre l'ordre du menu, les entrées masquées globalement, les vues
-	 * par groupes, les liens personnalisés et la portée du masquage (mobile,
-	 * desktop ou les deux), depuis l'écran de réglages admin.
+	 * par groupes, les liens personnalisés, la portée du masquage (mobile,
+	 * desktop ou les deux) et l'affichage de la section « Compte » du tiroir,
+	 * depuis l'écran de réglages admin.
 	 *
 	 * @param string[] $order
 	 * @param string[] $hidden
@@ -33,8 +34,15 @@ class SettingsController extends Controller {
 	 * @param array<int, mixed> $links
 	 */
 	#[AuthorizedAdminSetting(settings: Admin::class)]
-	public function save(array $order, array $hidden, array $views, array $links = [], ?string $scope = null): DataResponse {
-		$this->menuConfigService->setConfig($order, $hidden, $views, $links, $scope);
+	public function save(
+		array $order,
+		array $hidden,
+		array $views,
+		array $links = [],
+		?string $scope = null,
+		bool $showAccount = false,
+	): DataResponse {
+		$this->menuConfigService->setConfig($order, $hidden, $views, $links, $scope, $showAccount);
 
 		$config = $this->menuConfigService->getConfig();
 		$this->purgeUnusedIcons($config['links']);

@@ -7,7 +7,7 @@
     <description><![CDATA[Ajoute un menu hamburger et un tiroir de navigation coulissant à la barre du haut de Nextcloud, et agrandit les cibles tactiles sur mobile et tablette.
 
 Permet aussi à l’administrateur de choisir, groupe par groupe, quels raccourcis d’applications sont visibles — sur mobile, tablette et PC — afin de présenter une interface plus simple aux utilisateurs non techniques.]]></description>
-    <version>2.1.0</version>
+    <version>2.2.0</version>
     <licence>agpl</licence>
     <author>Wdebo</author>
     <namespace>MenuCustom</namespace>

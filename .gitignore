@@ -11,3 +11,6 @@
 *.log
 .DS_Store
 Thumbs.db
+
+# Sorties de Playwright MCP (captures de vérification)
+.playwright-mcp/

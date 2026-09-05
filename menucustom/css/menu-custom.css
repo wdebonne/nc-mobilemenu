@@ -92,7 +92,7 @@
 	.menucustom-overlay {
 		position: fixed;
 		inset: 0;
-		background: rgba(0, 0, 0, 0.4);
+		background: rgba(0, 0, 0, 0.5);
 		z-index: 7500;
 		opacity: 0;
 		visibility: hidden;
@@ -111,16 +111,66 @@
 		top: 0;
 		bottom: 0;
 		left: 0;
-		width: min(85vw, 320px);
-		max-width: 320px;
+		width: min(88vw, 340px);
+		max-width: 340px;
 		background: var(--color-main-background, #fff);
 		color: var(--color-main-text, #222);
 		z-index: 7501;
 		overflow-y: auto;
-		box-shadow: 2px 0 12px rgba(0, 0, 0, 0.25);
+		/* Le geste de défilement ne doit pas se propager à la page derrière. */
+		overscroll-behavior: contain;
+		-webkit-overflow-scrolling: touch;
+		box-shadow: 2px 0 16px rgba(0, 0, 0, 0.3);
 		transform: translateX(-100%);
 		transition: transform 0.25s ease;
-		padding: 12px 8px calc(12px + env(safe-area-inset-bottom));
+		padding: 0 0 calc(16px + env(safe-area-inset-bottom));
+		padding-left: env(safe-area-inset-left);
+	}
+
+	/* --- Barre de titre, avec la croix de fermeture --- */
+	.menucustom-drawer-header {
+		position: sticky;
+		top: 0;
+		z-index: 1;
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: 8px;
+		padding: calc(10px + env(safe-area-inset-top)) 10px 10px 20px;
+		background: var(--color-main-background, #fff);
+		border-bottom: 1px solid var(--color-border, rgba(0, 0, 0, 0.1));
+	}
+
+	.menucustom-drawer-title {
+		font-size: 17px;
+		font-weight: bold;
+	}
+
+	.menucustom-drawer-close {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		flex: 0 0 auto;
+		width: 44px;
+		height: 44px;
+		padding: 0;
+		border: none;
+		border-radius: 50%;
+		background: transparent;
+		color: inherit;
+		font-size: 26px;
+		line-height: 1;
+		cursor: pointer;
+	}
+
+	.menucustom-drawer-close:hover,
+	.menucustom-drawer-close:focus-visible,
+	.menucustom-drawer-close:active {
+		background: var(--color-background-hover, rgba(0, 0, 0, 0.07));
+	}
+
+	.menucustom-drawer .menucustom-section {
+		padding: 0 8px;
 	}
 
 	body.menucustom-open .menucustom-drawer {
@@ -128,15 +178,16 @@
 	}
 
 	.menucustom-drawer h2 {
-		font-size: 15px;
+		font-size: 12px;
+		font-weight: bold;
 		text-transform: uppercase;
-		letter-spacing: 0.04em;
-		opacity: 0.6;
-		margin: 16px 12px 8px;
+		letter-spacing: 0.06em;
+		opacity: 0.55;
+		margin: 18px 12px 6px;
 	}
 
-	.menucustom-drawer h2:first-child {
-		margin-top: 8px;
+	.menucustom-drawer .menucustom-section:first-of-type h2 {
+		margin-top: 12px;
 	}
 
 	.menucustom-drawer .menucustom-section > ul {
@@ -159,13 +210,14 @@
 		flex-direction: row;
 		align-items: center;
 		justify-content: flex-start;
-		gap: 12px;
+		gap: 16px;
 		width: 100%;
-		min-height: 48px;
-		padding: 12px 16px;
+		min-height: 56px;
+		padding: 10px 12px;
 		border-radius: var(--border-radius-large, 8px);
 		color: inherit;
 		text-decoration: none;
+		font-size: 16px;
 		box-sizing: border-box;
 	}
 
@@ -174,15 +226,23 @@
 		background: var(--color-background-hover, rgba(0, 0, 0, 0.05));
 	}
 
+	/* Au doigt il n'y a pas de survol : l'appui doit se voir tout de suite. */
+	.menucustom-drawer .menucustom-entry:active {
+		background: var(--color-background-dark, rgba(0, 0, 0, 0.1));
+	}
+
+	/* Fond seul, la page courante se repère mal dans une liste longue :
+	 * on ajoute un liseré dans la couleur d'accent du thème. */
 	.menucustom-drawer .menucustom-entry--active {
 		background: var(--color-primary-element-light, rgba(0, 0, 0, 0.07));
+		box-shadow: inset 3px 0 0 var(--color-primary-element, #0082c9);
 		font-weight: bold;
 	}
 
 	.menucustom-drawer .menucustom-entry-icon {
 		flex: 0 0 auto;
-		width: 20px;
-		height: 20px;
+		width: 24px;
+		height: 24px;
 		object-fit: contain;
 		/* Les icônes d'app de Nextcloud sont noires : inversées en thème sombre */
 		filter: var(--background-invert-if-dark, none);
@@ -197,9 +257,10 @@
 		display: inline-flex;
 		align-items: center;
 		justify-content: center;
-		font-size: 13px;
+		border-radius: 50%;
+		background: var(--color-background-dark, rgba(0, 0, 0, 0.08));
+		font-size: 12px;
 		font-weight: bold;
-		opacity: 0.7;
 		filter: none;
 	}
 
@@ -216,11 +277,12 @@
 		flex-direction: row;
 		align-items: center;
 		justify-content: flex-start;
-		gap: 12px;
+		gap: 16px;
 		width: 100%;
-		min-height: 48px;
-		padding: 12px 16px;
+		min-height: 56px;
+		padding: 10px 12px;
 		border-radius: var(--border-radius-large, 8px);
+		font-size: 16px;
 	}
 
 	.menucustom-drawer .menucustom-section li > a:not(.menucustom-entry):hover,
@@ -245,5 +307,17 @@
 	.menucustom-overlay,
 	.menucustom-drawer {
 		display: none !important;
+	}
+}
+
+/*
+ * Certaines personnes règlent leur système pour limiter les animations (mal des
+ * transports, troubles vestibulaires) : le tiroir apparaît alors sans glisser.
+ */
+@media (prefers-reduced-motion: reduce) {
+	.menucustom-drawer,
+	.menucustom-overlay,
+	.menucustom-toggle .menucustom-bar {
+		transition: none !important;
 	}
 }

@@ -25,7 +25,7 @@
 	var MAX_ICON_SIZE = 262144;
 
 	var entries = [];
-	var config = { order: [], hidden: [], views: [], scope: DEFAULT_SCOPE, links: [] };
+	var config = { order: [], hidden: [], views: [], scope: DEFAULT_SCOPE, links: [], showAccount: false };
 
 	/** Libellés des groupes connus (id -> nom), alimenté par l'état initial et les recherches. */
 	var groupNames = Object.create(null);
@@ -109,6 +109,23 @@
 	/* ------------------------------------------------------------------ *
 	 * Portée
 	 * ------------------------------------------------------------------ */
+
+	/* ------------------------------------------------------------------ *
+	 * Contenu du tiroir
+	 * ------------------------------------------------------------------ */
+
+	function buildAccountToggle() {
+		var checkbox = root.querySelector('[data-role="show-account"]');
+		if (!checkbox) {
+			return;
+		}
+
+		checkbox.checked = config.showAccount === true;
+		checkbox.addEventListener('change', function () {
+			config.showAccount = checkbox.checked;
+			scheduleSave();
+		});
+	}
 
 	function buildScopeList() {
 		if (!scopeList) {
@@ -1322,7 +1339,8 @@
 				hidden: config.hidden,
 				views: config.views,
 				links: config.links,
-				scope: config.scope
+				scope: config.scope,
+				showAccount: config.showAccount
 			})
 		}).then(function (response) {
 			if (!response.ok) {
@@ -1372,10 +1390,12 @@
 			hidden: (loaded && loaded.hidden) || [],
 			views: (loaded && loaded.views) || [],
 			links: (loaded && loaded.links) || [],
-			scope: (loaded && loaded.scope) || DEFAULT_SCOPE
+			scope: (loaded && loaded.scope) || DEFAULT_SCOPE,
+			showAccount: !!(loaded && loaded.showAccount)
 		};
 
 		buildScopeList();
+		buildAccountToggle();
 
 		var addViewButton = root.querySelector('[data-role="add-view"]');
 		if (addViewButton) {

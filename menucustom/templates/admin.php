@@ -46,6 +46,21 @@ declare(strict_types=1);
 		</ul>
 	</section>
 
+	<section class="menucustom-admin-block" data-block="drawer">
+		<h3><?php p($l->t('Tiroir mobile')); ?></h3>
+		<p class="settings-hint">
+			<?php p($l->t('Contenu du tiroir qui s\'ouvre sous 1024px de large, en plus des raccourcis d\'applications.')); ?>
+		</p>
+
+		<label class="menucustom-admin-checkbox">
+			<input type="checkbox" data-role="show-account">
+			<span>
+				<strong><?php p($l->t('Afficher la section « Compte »')); ?></strong>
+				<small><?php p($l->t('Réglages, statut et déconnexion. Désactivée par défaut : ces entrées restent accessibles par l\'avatar, et les reprendre ici rallonge le tiroir.')); ?></small>
+			</span>
+		</label>
+	</section>
+
 	<section class="menucustom-admin-block" data-block="links">
 		<h3><?php p($l->t('Liens personnalisés')); ?></h3>
 		<p class="settings-hint">

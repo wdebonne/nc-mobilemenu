@@ -62,7 +62,7 @@ class MenuConfigService {
 	}
 
 	/**
-	 * @return array{order: string[], hidden: string[], views: list<array{id: string, name: string, groups: string[], hidden: string[]}>, scope: string, links: list<array{id: string, name: string, url: string, icon: string, newTab: bool, groups: string[]}>}
+	 * @return array{order: string[], hidden: string[], views: list<array{id: string, name: string, groups: string[], hidden: string[]}>, scope: string, links: list<array{id: string, name: string, url: string, icon: string, newTab: bool, groups: string[]}>, showAccount: bool}
 	 */
 	public function getConfig(): array {
 		$raw = $this->appConfig->getValueString(Application::APP_ID, self::CONFIG_KEY, '');
@@ -77,6 +77,10 @@ class MenuConfigService {
 			'views' => $this->sanitizeViews($decoded['views'] ?? null, $decoded['groupHidden'] ?? null),
 			'scope' => $this->sanitizeScope($decoded['scope'] ?? null),
 			'links' => $this->sanitizeLinks($decoded['links'] ?? null),
+			// Désactivée par défaut : le menu du compte reste accessible par
+			// l'avatar, la reprendre dans le tiroir le rallonge sans rien
+			// apporter à la plupart des instances.
+			'showAccount' => (bool)($decoded['showAccount'] ?? false),
 		];
 	}
 
@@ -86,13 +90,21 @@ class MenuConfigService {
 	 * @param array<int, mixed> $views
 	 * @param array<int, mixed> $links
 	 */
-	public function setConfig(array $order, array $hidden, array $views, array $links, ?string $scope = null): void {
+	public function setConfig(
+		array $order,
+		array $hidden,
+		array $views,
+		array $links,
+		?string $scope = null,
+		bool $showAccount = false,
+	): void {
 		$payload = [
 			'order' => $this->sanitizeStringList($order),
 			'hidden' => $this->sanitizeStringList($hidden),
 			'views' => $this->sanitizeViews($views, null),
 			'scope' => $this->sanitizeScope($scope),
 			'links' => $this->sanitizeLinks($links),
+			'showAccount' => $showAccount,
 		];
 
 		$json = json_encode($payload);
@@ -107,7 +119,7 @@ class MenuConfigService {
 	 * `hideOnMobile` / `hideOnDesktop` traduisent la portée choisie par l'admin
 	 * pour que le script front n'ait pas à réinterpréter la valeur de `scope`.
 	 *
-	 * @return array{order: string[], hidden: string[], scope: string, hideOnMobile: bool, hideOnDesktop: bool}
+	 * @return array{order: string[], hidden: string[], scope: string, hideOnMobile: bool, hideOnDesktop: bool, showAccount: bool}
 	 */
 	public function getEffectiveConfigForUser(?IUser $user): array {
 		$config = $this->getConfig();
@@ -130,6 +142,7 @@ class MenuConfigService {
 			'scope' => $scope,
 			'hideOnMobile' => $scope === self::SCOPE_MOBILE || $scope === self::SCOPE_ALL,
 			'hideOnDesktop' => $scope === self::SCOPE_DESKTOP || $scope === self::SCOPE_ALL,
+			'showAccount' => $config['showAccount'],
 		];
 	}
 
@@ -373,7 +386,14 @@ class MenuConfigService {
 			$views[] = $view;
 		}
 
-		$this->setConfig($config['order'], $config['hidden'], $views, $config['links'], $config['scope']);
+		$this->setConfig(
+			$config['order'],
+			$config['hidden'],
+			$views,
+			$config['links'],
+			$config['scope'],
+			$config['showAccount'],
+		);
 
 		return true;
 	}

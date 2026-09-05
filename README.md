@@ -11,7 +11,7 @@ Deux besoins, une seule app légère et purement front-end :
 **1. Rendre le header utilisable au doigt.** Sur mobile/tablette, la barre du haut peut être difficile à manipuler : icônes trop petites ou trop rapprochées, pas de menu repliable adapté au tactile. `menucustom` :
 
 - affiche un **bouton hamburger** sous un certain breakpoint (≤ 1024px) ;
-- ouvre un **tiroir de navigation** (drawer) regroupant les applications et le menu du compte, avec gestion clavier (Échap), clic extérieur pour fermer et attributs ARIA ;
+- ouvre un **tiroir de navigation** (drawer) avec une barre de titre et une croix de fermeture, la touche Échap, le clic extérieur, et des attributs ARIA ;
 - **agrandit les cibles tactiles** (icônes, liens, boutons) à au moins 44×44px ;
 - ne modifie **rien** au-dessus de 1024px : l'expérience desktop native reste intacte.
 
@@ -93,7 +93,7 @@ sudo -u www-data php /var/www/nextcloud/occ app:enable menucustom
 
 ## Réglages admin
 
-Une section **« Menu Custom »** apparaît dans *Réglages > Administration*. Quatre blocs :
+Une section **« Menu Custom »** apparaît dans *Réglages > Administration*. Cinq blocs :
 
 ### 1. Où appliquer le masquage
 
@@ -103,7 +103,11 @@ Une section **« Menu Custom »** apparaît dans *Réglages > Administration*. Q
 | **Tiroir mobile uniquement** | Le menu natif reste complet ; seul le tiroir de l'app (≤ 1024px) est filtré. |
 | **Menu natif uniquement** | Le tiroir reste complet ; seul le menu d'applications de Nextcloud est filtré. |
 
-### 2. Liens personnalisés
+### 2. Tiroir mobile
+
+Une seule case : **Afficher la section « Compte »** (réglages, statut, déconnexion), **décochée par défaut**. Ces entrées restent joignables par l'avatar ; les reprendre dans le tiroir l'allonge et repousse les applications hors de l'écran sur un téléphone. Cochez-la si vos utilisateurs trouvent l'avatar peu évident.
+
+### 3. Liens personnalisés
 
 Un **lien** est un raccourci vers l'adresse de votre choix — intranet, application métier, page interne de l'instance. Cliquez sur **Ajouter un lien**, puis renseignez :
 
@@ -119,11 +123,11 @@ Le lien est publié dans la navigation de Nextcloud (`INavigationManager`) au d�
 
 À noter : les groupes d'un lien fonctionnent **à l'inverse** de ceux d'une vue. Le lien est *réservé* aux groupes listés ; la vue *masque* des entrées aux siens. Les deux se cumulent — un lien réservé au groupe « École » peut être masqué à ce même groupe par une vue, auquel cas plus personne ne le voit.
 
-### 3. Ordre et visibilité
+### 4. Ordre et visibilité
 
 Glissez-déposez les entrées (ou utilisez les boutons ↑/↓, accessibles au clavier) pour changer leur ordre, et décochez celles à masquer pour **tout le monde**. L'ordre s'applique au tiroir, et aussi au menu natif quand la portée inclut le PC.
 
-### 4. Vues par groupes
+### 5. Vues par groupes
 
 Une **vue** est un jeu de raccourcis à masquer, associé à un ou plusieurs groupes. Plusieurs groupes qui doivent voir la même chose partagent donc **une seule vue**, au lieu d'être configurés à l'identique un par un.
 

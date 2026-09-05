@@ -121,6 +121,9 @@
 			// mieux vaut un menu complet qu'un menu vide.
 			hideOnMobile: config.hideOnMobile !== false,
 			hideOnDesktop: config.hideOnDesktop === true,
+			// Ici le défaut permissif serait à contresens : la section « Compte »
+			// double le menu de l'avatar, l'admin doit la demander.
+			showAccount: config.showAccount === true,
 			navigation: navigation,
 			settingsNavigation: settingsNavigation
 		};
@@ -619,12 +622,39 @@
 		icon.style.backgroundColor = 'var(--color-main-text)';
 	}
 
+	/**
+	 * Barre de titre du tiroir. Le voile et la touche Échap ferment déjà le
+	 * tiroir, mais ni l'un ni l'autre ne se devine : sur un écran tactile, il
+	 * faut une croix visible.
+	 */
+	function buildDrawerHeader() {
+		var header = document.createElement('div');
+		header.className = 'menucustom-drawer-header';
+
+		var title = document.createElement('span');
+		title.className = 'menucustom-drawer-title';
+		title.textContent = t('Menu');
+
+		var close = document.createElement('button');
+		close.type = 'button';
+		close.className = 'menucustom-drawer-close';
+		close.setAttribute('aria-label', t('Fermer le menu'));
+		close.textContent = '×';
+		close.addEventListener('click', closeDrawer);
+
+		header.appendChild(title);
+		header.appendChild(close);
+
+		return header;
+	}
+
 	function populateDrawer() {
 		if (!drawer) {
 			return;
 		}
 
 		drawer.innerHTML = '';
+		drawer.appendChild(buildDrawerHeader());
 
 		var st = getState();
 		var sections = [];
@@ -634,9 +664,11 @@
 			? buildDataSection(t('Applications'), apps)
 			: buildClonedSection(t('Applications'), '#header', '#appmenu li > a, .app-menu-entry a'));
 
-		sections.push(st.settingsNavigation.length
-			? buildDataSection(t('Compte'), st.settingsNavigation)
-			: buildClonedSection(t('Compte'), '#user-menu, #settings', 'a, button'));
+		if (st.showAccount) {
+			sections.push(st.settingsNavigation.length
+				? buildDataSection(t('Compte'), st.settingsNavigation)
+				: buildClonedSection(t('Compte'), '#user-menu, #settings', 'a, button'));
+		}
 
 		var hasContent = false;
 		sections.forEach(function (section) {
