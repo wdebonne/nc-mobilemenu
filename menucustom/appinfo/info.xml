@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+<info xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:noNamespaceSchemaLocation="https://apps.nextcloud.com/schema/apps/info.xsd">
+    <id>menucustom</id>
+    <name>Menu Custom</name>
+    <summary>Navigation tactile et raccourcis d’applications par groupe</summary>
+    <description><![CDATA[Ajoute un menu hamburger et un tiroir de navigation coulissant à la barre du haut de Nextcloud, et agrandit les cibles tactiles sur mobile et tablette.
+
+Permet aussi à l’administrateur de choisir, groupe par groupe, quels raccourcis d’applications sont visibles — sur mobile, tablette et PC — afin de présenter une interface plus simple aux utilisateurs non techniques.]]></description>
+    <version>2.1.0</version>
+    <licence>agpl</licence>
+    <author>Wdebo</author>
+    <namespace>MenuCustom</namespace>
+    <category>tools</category>
+    <website>https://github.com/</website>
+    <bugs>https://github.com/</bugs>
+    <dependencies>
+        <nextcloud min-version="30" max-version="34"/>
+    </dependencies>
+    <repair-steps>
+        <install>
+            <step>OCA\MenuCustom\Migration\ImportLegacyConfig</step>
+        </install>
+        <post-migration>
+            <step>OCA\MenuCustom\Migration\ImportLegacyConfig</step>
+        </post-migration>
+    </repair-steps>
+    <settings>
+        <admin>OCA\MenuCustom\Settings\Admin</admin>
+        <admin-section>OCA\MenuCustom\Settings\AdminSection</admin-section>
+    </settings>
+</info>

@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace OCA\MobileMenu\Settings;
+namespace OCA\MenuCustom\Settings;
 
-use OCA\MobileMenu\AppInfo\Application;
+use OCA\MenuCustom\AppInfo\Application;
 use OCP\IL10N;
 use OCP\IURLGenerator;
 use OCP\Settings\IIconSection;
@@ -21,7 +21,7 @@ class AdminSection implements IIconSection {
 	}
 
 	public function getName(): string {
-		return $this->l->t('Mobile Menu');
+		return $this->l->t('Menu Custom');
 	}
 
 	public function getPriority(): int {

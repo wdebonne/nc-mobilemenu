@@ -1,0 +1,388 @@
+.menucustom-admin-block {
+	max-width: 640px;
+	margin-top: 24px;
+}
+
+.menucustom-admin-block h3 {
+	font-weight: bold;
+	margin-bottom: 4px;
+}
+
+.menucustom-admin-order-list,
+.menucustom-admin-view-entries {
+	list-style: none;
+	margin: 12px 0 0;
+	padding: 0;
+}
+
+.menucustom-admin-order-item {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	padding: 6px 8px;
+	border: 1px solid var(--color-border, rgba(0, 0, 0, 0.1));
+	border-radius: var(--border-radius, 4px);
+	background: var(--color-main-background, #fff);
+	margin-bottom: 6px;
+	cursor: grab;
+}
+
+.menucustom-admin-order-item.menucustom-admin-dragging {
+	opacity: 0.5;
+}
+
+.menucustom-admin-drag-handle {
+	flex: 0 0 auto;
+	opacity: 0.5;
+	font-size: 16px;
+	line-height: 1;
+	cursor: grab;
+}
+
+.menucustom-admin-order-label {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	flex: 1 1 auto;
+	min-width: 0;
+	cursor: pointer;
+}
+
+.menucustom-admin-order-label span:last-child {
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.menucustom-admin-order-controls {
+	flex: 0 0 auto;
+	display: flex;
+	gap: 4px;
+}
+
+.menucustom-admin-order-move {
+	min-width: 32px;
+	min-height: 32px;
+	border: 1px solid var(--color-border, rgba(0, 0, 0, 0.1));
+	border-radius: var(--border-radius, 4px);
+	background: var(--color-background-hover, transparent);
+	cursor: pointer;
+}
+
+.menucustom-admin-hint {
+	opacity: 0.7;
+	font-style: italic;
+	padding: 4px 8px;
+}
+
+.menucustom-admin-status {
+	margin-top: 16px;
+	min-height: 1.2em;
+	opacity: 0.7;
+}
+
+.menucustom-admin-status-error {
+	color: var(--color-error, #e9322d);
+	opacity: 1;
+}
+
+.menucustom-admin-scope-list {
+	list-style: none;
+	margin: 12px 0 0;
+	padding: 0;
+}
+
+.menucustom-admin-scope-list li {
+	margin-bottom: 8px;
+}
+
+.menucustom-admin-scope-list label {
+	display: flex;
+	align-items: flex-start;
+	gap: 8px;
+	cursor: pointer;
+}
+
+.menucustom-admin-scope-list label > span {
+	display: flex;
+	flex-direction: column;
+	gap: 2px;
+}
+
+.menucustom-admin-scope-list small {
+	opacity: 0.7;
+}
+
+.menucustom-admin-badge {
+	flex: 0 0 auto;
+	font-size: 11px;
+	line-height: 1;
+	padding: 3px 6px;
+	border-radius: var(--border-radius, 4px);
+	background: var(--color-warning, #c28900);
+	color: var(--color-primary-element-text, #fff);
+	white-space: nowrap;
+}
+
+.menucustom-admin-note {
+	max-width: 640px;
+	margin-top: 24px;
+}
+
+/* --- Vues par groupes --- */
+
+.menucustom-admin-views {
+	margin-top: 12px;
+}
+
+.menucustom-admin-view {
+	border: 1px solid var(--color-border, rgba(0, 0, 0, 0.1));
+	border-radius: var(--border-radius-large, 8px);
+	background: var(--color-main-background, #fff);
+	margin-bottom: 8px;
+}
+
+.menucustom-admin-view > summary {
+	display: flex;
+	align-items: baseline;
+	flex-wrap: wrap;
+	gap: 8px;
+	padding: 10px 12px;
+	cursor: pointer;
+	min-height: 44px;
+	box-sizing: border-box;
+}
+
+.menucustom-admin-view-title {
+	font-weight: bold;
+}
+
+.menucustom-admin-view-meta {
+	opacity: 0.7;
+	font-size: 0.9em;
+}
+
+.menucustom-admin-view-body {
+	display: flex;
+	flex-direction: column;
+	gap: 16px;
+	padding: 4px 12px 16px;
+	border-top: 1px solid var(--color-border, rgba(0, 0, 0, 0.1));
+}
+
+.menucustom-admin-field {
+	display: flex;
+	flex-direction: column;
+	gap: 6px;
+	border: none;
+	margin: 0;
+	padding: 0;
+	min-width: 0;
+}
+
+.menucustom-admin-field-label {
+	font-weight: bold;
+	padding: 0;
+}
+
+.menucustom-admin-field input[type="text"],
+.menucustom-admin-field input[type="url"] {
+	width: 100%;
+	max-width: 320px;
+	box-sizing: border-box;
+}
+
+/* Étiquettes des groupes associés à la vue */
+.menucustom-admin-chips {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: 6px;
+	min-height: 32px;
+}
+
+.menucustom-admin-chip {
+	display: inline-flex;
+	align-items: center;
+	gap: 4px;
+	padding: 4px 4px 4px 10px;
+	border-radius: 16px;
+	background: var(--color-primary-element-light, var(--color-background-dark, rgba(0, 0, 0, 0.07)));
+	color: var(--color-primary-element-light-text, inherit);
+	max-width: 100%;
+}
+
+.menucustom-admin-chip > span {
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.menucustom-admin-chip--unknown {
+	background: var(--color-warning, #c28900);
+	color: var(--color-primary-element-text, #fff);
+}
+
+.menucustom-admin-chip-remove {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 24px;
+	height: 24px;
+	padding: 0;
+	border: none;
+	border-radius: 50%;
+	background: transparent;
+	color: inherit;
+	font-size: 16px;
+	line-height: 1;
+	cursor: pointer;
+}
+
+.menucustom-admin-chip-remove:hover,
+.menucustom-admin-chip-remove:focus-visible {
+	background: var(--color-background-hover, rgba(0, 0, 0, 0.1));
+}
+
+/* Champ de recherche de groupes et ses suggestions */
+.menucustom-admin-autocomplete {
+	position: relative;
+	max-width: 320px;
+}
+
+.menucustom-admin-group-search {
+	width: 100%;
+	box-sizing: border-box;
+}
+
+.menucustom-admin-suggestions {
+	position: absolute;
+	z-index: 10;
+	top: calc(100% + 2px);
+	left: 0;
+	right: 0;
+	max-height: 240px;
+	overflow-y: auto;
+	margin: 0;
+	padding: 4px;
+	list-style: none;
+	background: var(--color-main-background, #fff);
+	border: 1px solid var(--color-border, rgba(0, 0, 0, 0.1));
+	border-radius: var(--border-radius-large, 8px);
+	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.menucustom-admin-suggestion {
+	display: flex;
+	align-items: baseline;
+	justify-content: space-between;
+	gap: 8px;
+	padding: 8px 10px;
+	border-radius: var(--border-radius, 4px);
+	cursor: pointer;
+}
+
+.menucustom-admin-suggestion--active,
+.menucustom-admin-suggestion:hover {
+	background: var(--color-background-hover, rgba(0, 0, 0, 0.07));
+}
+
+.menucustom-admin-suggestion--empty {
+	opacity: 0.7;
+	font-style: italic;
+	cursor: default;
+}
+
+.menucustom-admin-suggestion--empty:hover {
+	background: transparent;
+}
+
+.menucustom-admin-suggestion-hint {
+	opacity: 0.7;
+	white-space: nowrap;
+}
+
+.menucustom-admin-view-entries li {
+	padding: 2px 0;
+}
+
+.menucustom-admin-view-entries label {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	cursor: pointer;
+}
+
+.menucustom-admin-view-delete,
+.menucustom-admin-add-view {
+	align-self: flex-start;
+	min-height: 34px;
+	padding: 4px 12px;
+	border: 1px solid var(--color-border, rgba(0, 0, 0, 0.1));
+	border-radius: var(--border-radius, 4px);
+	background: transparent;
+	cursor: pointer;
+}
+
+.menucustom-admin-view-delete:hover {
+	color: var(--color-error, #e9322d);
+	border-color: var(--color-error, #e9322d);
+}
+
+.menucustom-admin-add-view {
+	margin-top: 8px;
+}
+
+/* --- Liens personnalisés --- */
+
+/* La carte d'un lien réutilise la présentation de celle d'une vue. */
+.menucustom-admin-links {
+	margin-top: 12px;
+}
+
+.menucustom-admin-icon-row {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: 8px;
+}
+
+/* Reprend la taille et le repli « initiale » de l'icône du tiroir. */
+.menucustom-admin-icon-preview {
+	flex: 0 0 auto;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 32px;
+	height: 32px;
+	border: 1px solid var(--color-border, rgba(0, 0, 0, 0.1));
+	border-radius: var(--border-radius, 3px);
+	background: var(--color-background-dark, rgba(0, 0, 0, 0.05));
+	font-weight: bold;
+	opacity: 0.9;
+	overflow: hidden;
+}
+
+.menucustom-admin-icon-preview img {
+	width: 20px;
+	height: 20px;
+	object-fit: contain;
+}
+
+.menucustom-admin-icon-row input[type="text"] {
+	flex: 1 1 200px;
+	min-width: 0;
+}
+
+.menucustom-admin-icon-button {
+	flex: 0 0 auto;
+	min-height: 34px;
+}
+
+.menucustom-admin-checkbox {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	min-height: 44px;
+	cursor: pointer;
+}
